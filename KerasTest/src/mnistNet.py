@@ -6,6 +6,7 @@ from keras.layers import Dense
 from keras.layers import Dropout
 from keras.utils import np_utils
 
+#test2
 
 (x_train, y_train), (x_test, y_test) = mnist.load_data()
 
