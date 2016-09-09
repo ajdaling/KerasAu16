@@ -56,3 +56,7 @@ model.fit(x_train,y_train, validation_data=(x_test,y_test), nb_epoch = 10, batch
 #final evalutation
 scores = model.evaluate(x_train, y_train, verbose=0)
 print("Baseline error: %.2f%%" % (100-scores[1]*100))
+
+from keras.utils.visualize_util import plot
+plot(model, to_file='model.png')
+
