@@ -7,7 +7,7 @@ img_width, img_height = 128, 128
 
 #build vgg16 network
 model = Sequential()
-mode.add(ZeroPadding2D((1,1), batch_input_shape=(1,3,img_width,img_height)))
+model.add(ZeroPadding2D((1,1), batch_input_shape=(1,3,img_width,img_height)))
 first_layer = model.layers[-1]
 #this is placeholder that contains generated images
 input_img = first_layer.input
