@@ -34,7 +34,16 @@ def deprocess_image(x):
 
 
 
-#rebuild the model used to generate the weights for curret data set
+#load model and weights
+json_file = open('mnist_model2.json','r')
+loaded_model_json = json_file.read()
+json_file.close()
+model = model_from_json(loaded_model_json)
+print('loaded model')
+model.load_weights('mnist_Weights.h5')
+print('loaded weights')
+
+
 
 
 
