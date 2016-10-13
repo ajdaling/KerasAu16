@@ -2,10 +2,16 @@
 from keras.datasets import mnist
 import matplotlib.pyplot as plt
 import numpy
+
+from keras.models import load_model
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Dropout
 from keras.utils import np_utils
+from keras.models import model_from_json
+import theano
+
+theano.config.openmp = "True"
 
 #test2
 
@@ -40,24 +46,39 @@ def baseline_model():
     #simple neural net w/ one hidden layer with same # neurons as inputs (784)
     #rectifier activation function
     
-    model.add(Dense(num_pixels, input_dim = num_pixels, init='normal', activation='relu'))
+    model.add(Dense(num_pixels, input_dim = num_pixels, init='normal', activation='relu',name='dense1'))
     
     #softmax activation function on output
     #adam gradient descent
     # logarithmic loss (crossentropy)
-    model.add(Dense(num_classes, init='normal',activation='softmax'))
+    model.add(Dense(num_classes, init='normal',activation='softmax',name='dense2'))
     #Compile Model
     model.compile(loss='categorical_crossentropy',optimizer='adam',metrics=['accuracy'])
     return model
 
 #build model
 model = baseline_model()
+#print summary to check for errors
+#model.summary()
+
 #fit model
 model.fit(x_train,y_train, validation_data=(x_test,y_test), nb_epoch = 10, batch_size = 200, verbose = 2)
-#final evalutation
+#final evaluation
 scores = model.evaluate(x_train, y_train, verbose=0)
 print("Baseline error: %.2f%%" % (100-scores[1]*100))
 
-from keras.utils.visualize_util import plot
-plot(model, to_file='model.png')
+#from keras.utils.visualize_util import plot
+#plot(model, to_file='model.png')
+
+#save model to file
+model.save('mnist_model1.h5')
+print('saved model once')
+
+model_json = model.to_json()
+with open('mnist_model2.json','w+') as json_file:
+	json_file.write(model_json)
+print('saved model twice')
+#save weights to file
+model.save_weights('mnist_weights.h5')
+print('saved weights')
 
