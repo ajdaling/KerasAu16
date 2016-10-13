@@ -43,7 +43,19 @@ print('loaded model')
 model.load_weights('mnist_Weights.h5')
 print('loaded weights')
 
+#print model summary
 model.summary()
+
+#arbitrarily select filter 10
+filter_index = 10
+
+print('Processing filter %d' % filter_index)
+start_time = time.time()
+
+
+	
+
+
 
 
 
