@@ -43,6 +43,10 @@ print('loaded model')
 model.load_weights('mnist_Weights.h5')
 print('loaded weights')
 
+model.summary()
+
+
+
 
 
 
