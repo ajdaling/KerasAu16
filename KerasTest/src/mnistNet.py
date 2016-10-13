@@ -70,15 +70,5 @@ print("Baseline error: %.2f%%" % (100-scores[1]*100))
 #from keras.utils.visualize_util import plot
 #plot(model, to_file='model.png')
 
-#save model to file
-model.save('mnist_model1.h5')
-print('saved model once')
 
-model_json = model.to_json()
-with open('mnist_model2.json','w+') as json_file:
-	json_file.write(model_json)
-print('saved model twice')
-#save weights to file
-model.save_weights('mnist_weights.h5')
-print('saved weights')
 

@@ -81,4 +81,14 @@ score = model.evaluate(X_test, Y_test, verbose=0)
 print('Test score:', score[0])
 print('Test accuracy:', score[1])
 
-model.save('mnist_model2.h5')
+#save model to file
+model.save('mnist_model1.h5')
+print('saved model once')
+
+model_json = model.to_json()
+with open('mnist_model2.json','w+') as json_file:
+	json_file.write(model_json)
+print('saved model twice')
+#save weights to file
+model.save_weights('mnist_weights.h5')
+print('saved weights')
