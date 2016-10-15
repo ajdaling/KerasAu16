@@ -30,12 +30,15 @@ print('loaded weights')
 #print model summary
 #model.summary()
 
-wgts = model.layers[1].get_weights()
-print(wgts[0])
 
 #start with initial input, obviously
 input_img = model.layers[0].input
-layer_output = model.layers[0].output
+
+
+for z in range(0,-20):
+	print(z, " ------ ", model.layers[z])
+
+layer_output = model.layers[-1].output
 
 
 learning_rate = 500
