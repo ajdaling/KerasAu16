@@ -11,6 +11,36 @@ import time
 import h5py
 
 
+'''
+This program generates n 28x28 grayscale .png images. These images represent inputs
+that would maximize a particular filter at a particular layer of the cnn (see mnist_cnn.py).
+The network model and weights are loaded in as .h5 files generated after training the
+mnist_cnn.py network.
+
+author: Alec Daling
+date: 10/14/16
+
+adapted from: 
+
+	1. github.com/fchollet/keras/blob/
+	2. ankivil.com/visualizing-deep...
+	3. keras blog (fchollet's walkthrough)
+
+Notes: 
+	1. The loss function is dependent upon the type of layer you are 
+		using. Both kinds of loss function are included, just comment
+		one out.
+	2. The name of the layer has to specified, as well as the indices of the filters 
+		you are trying to visualize. I will, at some point, make these user argument
+		...I think.
+	3. Most interesting results come from running on either the final fully connected
+		(dense) layer or the 2nd (non-input) convolutional layer.
+	4. The names of the layers can be seen by running the script once, it will 
+		output a text representation of the model that includes dimensions
+		of output and input as well as layer names and types.
+'''
+
+
 img_width = 28
 img_height = 28
 
