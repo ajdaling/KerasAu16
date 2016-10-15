@@ -95,5 +95,5 @@ with open('mnist_model2.json','w+') as json_file:
 	json_file.write(model_json)
 print('saved model twice')
 #save weights to file
-model.save_weights('mnist_weights.h5')
-print('saved weights')
+#model.save_weights('mnist_weights.h5')
+#print('saved weights')

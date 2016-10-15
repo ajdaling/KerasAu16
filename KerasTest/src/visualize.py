@@ -1,59 +1,87 @@
-from keras.datasets import mnist
-import maplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 import numpy
+from scipy.misc import imsave
 from keras.models import load_model
 from keras.models import Sequential
-from keras.layers import dense
+from keras.layers import Dense
 from keras.layers import Dropout
 from keras.utils import np_utils
+from keras import backend
 import theano
+import tensorflow as tf
+import time
+import os
+import h5py
 
-model = load_model('mnist_model1.h5')
 
 img_width = 28
 img_height = 28
 
-#name of layer to visualize
-layer_name = 'dense2'
 
-
-#util function to convert a tensor into an image
-def deprocess_image(x):
-	#normalize tensor: cneter on 0
-	x -= x.mean()
-	x /= (x.std() + 1e-5)
-	x *= 0.1
-	
-	#clip to [0,1]
-	x += 0.5
-	x = np.clip[x,0,1]
-
-	#convert to grayscale
-	
-#TODO: figure out how to do this
-
-
+#name of layer to visualize 
+#TODO: create array of layers you would like to visualize and iterate over them
+layer_name = 'dense_2'
 
 #load model and weights
-json_file = open('mnist_model2.json','r')
-loaded_model_json = json_file.read()
-json_file.close()
-model = model_from_json(loaded_model_json)
+model = load_model('mnist_model1.h5')
 print('loaded model')
-model.load_weights('mnist_Weights.h5')
+model.load_weights('mnist_weights.h5')
 print('loaded weights')
-
 #print model summary
-model.summary()
+#model.summary()
 
-#arbitrarily select filter 10
-filter_index = 10
+wgts = model.layers[1].get_weights()
+print(wgts[0])
 
-print('Processing filter %d' % filter_index)
+#start with initial input, obviously
+input_img = model.layers[0].input
+layer_output = model.layers[0].output
+
+
+learning_rate = 500
+
+#arbitrarily select filter 10 and class 3
+class_index = 3 
+
+print('Processing filter %d' % class_index)
 start_time = time.time()
+print("start time is: %d" % start_time)
+#build a loss function that maximizes the activation of each filter of the layer considered
+loss = layer_output[0, class_index]
 
 
-	
+#compute gradient of input picture wrt this loss
+grads = backend.gradients(loss, input_img)[0]
+
+
+#this function returns loss and grads given the input picture
+iterate = backend.function([input_img, backend.learning_phase()],[loss,grads])
+
+#set numpy's random seed for reproducibility
+numpy.random.seed(333)
+
+#start with gray image w/ random noise
+#input_img_data = numpy.random.random((img_height, img_width, 1))
+#distribute over range [-128,128]
+#input_img_data = (input_img_data - 0.5) * 20 + 128
+input_img_data = numpy.random.normal(0,10,(1,)+model.input_shape[1:])
+
+
+print('by the way, the model input shape is: %d', model.input_shape[1:])
+
+#run gradient ascent for 200 steps
+for i in range(200):
+	loss_value, grads_value = iterate([input_img_data,0]) #0 for test phase
+	input_img_data += grads_value * learning_rate #apply gradient to image
+
+	print('Current loss value: %d'% loss_value)
+
+
+
+#print('Filter %d processed' % (filter_index))
+
+#imsave('visualized_filter_10.png', img)
+
 
 
 
