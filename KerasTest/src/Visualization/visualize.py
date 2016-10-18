@@ -40,6 +40,12 @@ Notes:
 		of output and input as well as layer names and types.
 '''
 
+#pick which layer you would like to run visualize on
+#TODO: write separate script that will run over multiple layers
+layer_name = 'convolution2d_1' # TODO: don't forget to change the loss function
+#dense_2 is the name of the final fully-connected classification layer
+#convolution2d_2 is the name of the second non-input convolution layer
+
 
 img_width = 28
 img_height = 28
@@ -78,11 +84,6 @@ step = 0.5
 #create a dictionary with each layer's name for convenience
 layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
-#pick which layer you would like to run visualize on
-#TODO: write separate script that will run over multiple layers
-layer_name = 'dense_2' # TODO: don't forget to change the loss function
-#dense_2 is the name of the final fully-connected classification layer
-#convolution2d_2 is the name of the second non-input convolution layer
 
 #start with initial input, obviously
 input_img = model.layers[0].input
@@ -92,15 +93,15 @@ input_img = model.layers[0].input
 
 layer_output = layer_dict[layer_name].output
 
-for n in range(8,10):
+for n in range(13,14):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
 	#build a loss function that maximizes the activation of n filters of the layer considered
 
 	#TODO: select one of these loss function depending on which layer you're using
-	loss = backend.mean(layer_output[:, filter_index]) # loss function for dense layers
-	#loss = backend.mean(layer_output[:,filter_index,:,:]) # for non-dense layers
+	#loss = backend.mean(layer_output[:, filter_index]) # loss function for dense layers
+	loss = backend.mean(layer_output[:,filter_index,:,:]) # for non-dense layers
 
 	#compute gradient of input picture wrt this loss
 	grads = backend.gradients(loss, input_img)[0]
@@ -117,7 +118,7 @@ for n in range(8,10):
 	input_img_data = numpy.random.random((1,1,img_width, img_height))*20+128
 
 	#run gradient ascent on current filter for x steps until loss function is maximized
-	for i in range(1000):
+	for i in range(300000):
 		#compute loss and gradients
 		loss_value, grads_value = iterate([input_img_data, 0]) # 2nd argument is always 0 (for test phase)
 		#apply gradient to image and repeat
@@ -130,5 +131,5 @@ for n in range(8,10):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	scipy.misc.toimage(img[:,:,0]).save('mnist_cnn_layer_%s_filter_%d.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,0]).save('./images/mnist_cnn_layer_%s_filter_%d.png' %(layer_name, filter_index))
 
