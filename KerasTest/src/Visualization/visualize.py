@@ -46,11 +46,14 @@ layer_name = 'convolution2d_1' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
+#use this for dense layers
+#img_width = 28
+#img_height = 28
+#use this for conv layers
+img_width = 3
+img_height = 3
 
-img_width = 28
-img_height = 28
-
-#this function takes in a 28x28,1 image and processes it into a usable grayscale image
+#this function takes in an image and processes it into a usable grayscale image
 def deprocess_image(x):
 
 	x -= x.mean()
@@ -67,7 +70,6 @@ def deprocess_image(x):
 	x = numpy.clip(x,0,255).astype('uint8')
 
 	return x	
-
 
 #load model and weights (generated in mnist_cnn.py)
 model = load_model('mnist_model1.h5')
@@ -86,6 +88,7 @@ layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
 
 #start with initial input, obviously
+print(model.layers[0].input)
 input_img = model.layers[0].input
 	#Note: the layer index would be -1 instead of 0 but this network uses the first 
 	#convolutional layer as the input instead of a fully-conected
@@ -118,7 +121,7 @@ for n in range(13,14):
 	input_img_data = numpy.random.random((1,1,img_width, img_height))*20+128
 
 	#run gradient ascent on current filter for x steps until loss function is maximized
-	for i in range(300000):
+	for i in range(300):
 		#compute loss and gradients
 		loss_value, grads_value = iterate([input_img_data, 0]) # 2nd argument is always 0 (for test phase)
 		#apply gradient to image and repeat
