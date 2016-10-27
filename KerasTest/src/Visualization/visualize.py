@@ -42,16 +42,13 @@ Notes:
 
 #pick which layer you would like to run visualize on
 #TODO: write separate script that will run over multiple layers
-layer_name = 'convolution2d_1' # TODO: don't forget to change the loss function
+layer_name = 'convolution2d_2' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
-#use this for dense layers
-#img_width = 28
-#img_height = 28
-#use this for conv layers
-img_width = 3
-img_height = 3
+img_width = 9
+img_height = 9
+
 
 #this function takes in an image and processes it into a usable grayscale image
 def deprocess_image(x):
@@ -88,15 +85,14 @@ layer_dict = dict([(layer.name, layer) for layer in model.layers])
 
 
 #start with initial input, obviously
-print(model.layers[0].input)
+#print(model.layers[0].input)
 input_img = model.layers[0].input
 	#Note: the layer index would be -1 instead of 0 but this network uses the first 
 	#convolutional layer as the input instead of a fully-conected
 
-
 layer_output = layer_dict[layer_name].output
-
-for n in range(13,14):
+#layer_output = model.layers[0].output
+for n in range(1,32):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
@@ -115,13 +111,13 @@ for n in range(13,14):
 	iterate = backend.function([input_img, backend.learning_phase()],[loss,grads])
 
 	#set numpy's random seed for reproducibility
-	numpy.random.seed(333)
+	numpy.random.seed(117)
 
 	#start with random grayscale image to begin gradient ascent on
 	input_img_data = numpy.random.random((1,1,img_width, img_height))*20+128
 
 	#run gradient ascent on current filter for x steps until loss function is maximized
-	for i in range(300):
+	for i in range(1000):
 		#compute loss and gradients
 		loss_value, grads_value = iterate([input_img_data, 0]) # 2nd argument is always 0 (for test phase)
 		#apply gradient to image and repeat
@@ -134,5 +130,5 @@ for n in range(13,14):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	scipy.misc.toimage(img[:,:,0]).save('./images/mnist_cnn_layer_%s_filter_%d.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,0]).save('./images/mnist_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
 
