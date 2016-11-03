@@ -42,7 +42,7 @@ Notes:
 
 #pick which layer you would like to run visualize on
 #TODO: write separate script that will run over multiple layers
-layer_name = 'dense_2' # TODO: don't forget to change the loss function
+layer_name = 'convolution2d_2' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
@@ -91,8 +91,11 @@ input_img = model.layers[0].input
 	#convolutional layer as the input instead of a fully-conected
 
 layer_output = layer_dict[layer_name].output
+print(backend.int_shape(layer_output))
+print(backend.ndim(layer_output))
+print(backend.shape(layer_output))
 #layer_output = model.layers[0].output
-for n in range(1,2):
+for n in range(0,0):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
