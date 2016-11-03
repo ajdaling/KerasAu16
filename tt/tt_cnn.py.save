@@ -16,6 +16,9 @@ from keras.layers import Convolution2D, MaxPooling2D
 from keras.utils import np_utils
 from keras import backend as K
 
+ttHbb_bjets_path = "/nfs/09/osu9669/work/particleFlow/TorchData/Augmented/ttHbb_bjets_augmented.txt"
+ttHbb_bjets_test = "/nfs/09/osu9669/work/particleFlow/TorchData/Augmented/ttHbb_bjets_
+
 batch_size = 128
 nb_classes = 10
 nb_epoch = 12
@@ -82,13 +85,13 @@ print('Test score:', score[0])
 print('Test accuracy:', score[1])
 
 #save model to file
-model.save('mnist_model5.h5')
+model.save('mnist_model1.h5')
 print('saved model once')
 
 model_json = model.to_json()
-with open('mnist_model5.json','w+') as json_file:
+with open('mnist_model2.json','w+') as json_file:
 	json_file.write(model_json)
 print('saved model twice')
 #save weights to file
-model.save_weights('mnist_weights5.h5')
+model.save_weights('mnist_weights.h5')
 print('saved weights')
