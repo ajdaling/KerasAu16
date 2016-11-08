@@ -9,6 +9,7 @@ import scipy
 import theano
 import time
 import h5py
+from keras.models import model_from_json
 
 
 '''
@@ -42,13 +43,11 @@ Notes:
 
 #pick which layer you would like to run visualize on
 #TODO: write separate script that will run over multiple layers
-layer_name = 'convolution2d_2' # TODO: don't forget to change the loss function
+layer_name = 'convolution2d_3' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
-img_width = 32
-img_height = 32
-
+img_width, img_height = 200, 200
 
 #this function takes in an image and processes it into a usable grayscale image
 def deprocess_image(x):
@@ -68,17 +67,21 @@ def deprocess_image(x):
 
 	return x	
 
-#load model and weights (generated in mnist_cnn.py)
-model = load_model('../hareesh/model_32x32_35k.h5')
+#
+# load json and create model
+json_file = open('/users/PYS0284/com0620/keras//class4_model.json', 'r')
+loaded_model_json = json_file.read()
+json_file.close()
+model = model_from_json(loaded_model_json)
 print('loaded model')
-model.load_weights('../hareesh/weights_32x32_35k.h5')
-#have to load weights manually to exclude top layers
+#
+model.load_weights('/users/PYS0284/com0620/keras//class4_weights_new.h5')
 print('loaded weights')
 #print model summary
 model.summary()
 
 #define the step for gradient ascent
-step = 0.5
+step = 3
 
 #create a dictionary with each layer's name for convenience
 layer_dict = dict([(layer.name, layer) for layer in model.layers])
@@ -93,44 +96,46 @@ input_img = model.layers[0].input
 layer_output = layer_dict[layer_name].output
 
 #layer_output = model.layers[0].output
-for n in range(0,5):
-	filter_index = n
-	print('Processing filter %d' % filter_index)
-	start_time = time.time()
-	#build a loss function that maximizes the activation of n filters of the layer considered
+for n in range(0,32):
+   filter_index = n
+   print('Processing filter %d' % filter_index)
+   start_time = time.time()
+   #build a loss function that maximizes the activation of n filters of the layer considered
 
-	#TODO: select one of these loss function depending on which layer you're using
-	#loss = backend.mean(layer_output[:, filter_index]) # loss function for dense layers
-	loss = backend.mean(layer_output[:,filter_index,:,:]) # for non-dense layers
+   #TODO: select one of these loss function depending on which layer you're using
+   #loss = backend.mean(layer_output[:, filter_index]) # loss function for dense layers
+   loss = backend.mean(layer_output[:,filter_index,:,:]) # for non-dense layers
 
-	#compute gradient of input picture wrt this loss
-	grads = backend.gradients(loss, input_img)[0]
-	#normalize gradient to avoid values
-	grads /= (backend.sqrt(backend.mean(backend.square(grads))) + 1e-5)
+   #compute gradient of input picture wrt this loss
+   grads = backend.gradients(loss, input_img)[0]
+   #normalize gradient to avoid values
+   grads /= (backend.sqrt(backend.mean(backend.square(grads))) + 1e-5)
 
-	#this function returns loss and grads given the input picture
-	iterate = backend.function([input_img, backend.learning_phase()],[loss,grads])
+   #this function returns loss and grads given the input picture
+   iterate = backend.function([input_img, backend.learning_phase()],[loss,grads])
 
-	#set numpy's random seed for reproducibility
-	numpy.random.seed(117)
+   #set numpy's random seed for reproducibility
+   numpy.random.seed(117)
 
-	#start with random grayscale image to begin gradient ascent on
-	input_img_data = numpy.random.random((1,5,img_width, img_height))*20+128
+   #start with random grayscale image to begin gradient ascent on
+   input_img_data = numpy.random.random((1,3,img_width, img_height))*20+128
 
-	#run gradient ascent on current filter for x steps until loss function is maximized
-	for i in range(1000):
-		#compute loss and gradients
-		loss_value, grads_value = iterate([input_img_data, 0]) # 2nd argument is always 0 (for test phase)
-		#apply gradient to image and repeat
-		input_img_data += grads_value * step
-	
-		print('Current loss value: %d'% loss_value)
+   #run gradient ascent on current filter for x steps until loss function is maximized
+   for i in range(200):
+      #compute loss and gradients
+      loss_value, grads_value = iterate([input_img_data, 0]) # 2nd argument is always 0 (for test phase)
+      #apply gradient to image and repeat
+      input_img_data += grads_value * step
+      if (i%50==0): 
+         print('Current loss value: %d %d'% (i,loss_value))
 
-	#convert array to grayscale image
-	img = deprocess_image(input_img_data[0])
-	end_time = time.time()
-	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
-	#save image to file
-	for indx in range(0,5):
-		scipy.misc.toimage(img[:,:,indx]).save('./images/tt_cnn_layer_%s_filter_%d_img_%d.png' %(layer_name, filter_index, indx))
+   print input_img_data
+   #convert array to grayscale image
+   img = deprocess_image(input_img_data[0])
+   print "img: ",img.shape
+   print "img: ",img
+   end_time = time.time()
+   print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
+   #save image to file
+   scipy.misc.toimage(img[:,:,:]).save('images/tt_cnn_layer_%s_filter_%d.png' %(layer_name, filter_index))
 

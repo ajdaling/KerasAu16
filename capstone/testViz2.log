@@ -1,0 +1,8 @@
+Using Theano backend.
+Using gpu device 0: Tesla M2070 (CNMeM is enabled with initial size: 95.0% of memory, cuDNN not available)
+/users/PYS0284/com0620/.local/lib/python2.7/site-packages/keras/backend/theano_backend.py:1237: UserWarning: DEPRECATION: the 'ds' parameter is not going to exist anymore as it is going to be replaced by the parameter 'ws'.
+  mode='max')
+/users/PYS0284/com0620/.local/lib/python2.7/site-packages/keras/backend/theano_backend.py:1237: UserWarning: DEPRECATION: the 'st' parameter is not going to exist anymore as it is going to be replaced by the parameter 'stride'.
+  mode='max')
+/users/PYS0284/com0620/.local/lib/python2.7/site-packages/keras/backend/theano_backend.py:1237: UserWarning: DEPRECATION: the 'padding' parameter is not going to exist anymore as it is going to be replaced by the parameter 'pad'.
+  mode='max')

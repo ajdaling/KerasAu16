@@ -12,13 +12,13 @@ import h5py
 
 
 '''
-This program generates n 32x32 grayscale .png images. These images represent inputs
-that would maximize a particular filter at a particular layer of the cnn (tt_cnn).
+This program generates n 28x28 grayscale .png images. These images represent inputs
+that would maximize a particular filter at a particular layer of the cnn (see mnist_cnn.py).
 The network model and weights are loaded in as .h5 files generated after training the
-cnn.
+mnist_cnn.py network.
 
 author: Alec Daling
-date: 11/3/16
+date: 10/14/16
 
 adapted from: 
 
@@ -46,8 +46,8 @@ layer_name = 'convolution2d_2' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
-img_width = 32
-img_height = 32
+img_width = 9
+img_height = 9
 
 
 #this function takes in an image and processes it into a usable grayscale image
@@ -69,9 +69,9 @@ def deprocess_image(x):
 	return x	
 
 #load model and weights (generated in mnist_cnn.py)
-model = load_model('../hareesh/model_32x32_35k.h5')
+model = load_model('mnist_model1.h5')
 print('loaded model')
-model.load_weights('../hareesh/weights_32x32_35k.h5')
+model.load_weights('mnist_weights.h5')
 #have to load weights manually to exclude top layers
 print('loaded weights')
 #print model summary
@@ -91,9 +91,8 @@ input_img = model.layers[0].input
 	#convolutional layer as the input instead of a fully-conected
 
 layer_output = layer_dict[layer_name].output
-
 #layer_output = model.layers[0].output
-for n in range(0,5):
+for n in range(1,32):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
@@ -115,7 +114,7 @@ for n in range(0,5):
 	numpy.random.seed(117)
 
 	#start with random grayscale image to begin gradient ascent on
-	input_img_data = numpy.random.random((1,5,img_width, img_height))*20+128
+	input_img_data = numpy.random.random((1,1,img_width, img_height))*20+128
 
 	#run gradient ascent on current filter for x steps until loss function is maximized
 	for i in range(1000):
@@ -131,6 +130,5 @@ for n in range(0,5):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	for indx in range(0,5):
-		scipy.misc.toimage(img[:,:,indx]).save('./images/tt_cnn_layer_%s_filter_%d_img_%d.png' %(layer_name, filter_index, indx))
+	scipy.misc.toimage(img[:,:,0]).save('./images/mnist_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
 
