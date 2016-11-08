@@ -91,11 +91,8 @@ input_img = model.layers[0].input
 	#convolutional layer as the input instead of a fully-conected
 
 layer_output = layer_dict[layer_name].output
-print(backend.int_shape(layer_output))
-print(backend.ndim(layer_output))
-print(backend.shape(layer_output))
 #layer_output = model.layers[0].output
-for n in range(0,0):
+for n in range(0,5):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
