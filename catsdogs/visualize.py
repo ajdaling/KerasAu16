@@ -65,7 +65,7 @@ def deprocess_image(x):
 
 	#convert to grayscale
 	x *= 255	
-	x = x.transpose((1,2,0)) # change from (channel,height,width) to (height,width,channel) for conversion to png
+	#x = x.transpose((1,2,0)) # change from (channel,height,width) to (height,width,channel) for conversion to png
 	x = numpy.clip(x,0,255).astype('uint8')
 
 	return x	
