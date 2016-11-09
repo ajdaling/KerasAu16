@@ -44,7 +44,7 @@ Notes:
 
 #pick which layer you would like to run visualize on
 #TODO: write separate script that will run over multiple layers
-layer_name = 'convolution2d_3' # TODO: don't forget to change the loss function
+layer_name = 'conv3_1' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
@@ -72,18 +72,18 @@ def deprocess_image(x):
 
 
 #load model and weights (generated in mnist_cnn.py)
-with open('class4_model.json') as jsn:
+with open('class_model_big.json') as jsn:
 	model = model_from_json(jsn.read())
 
 print('loaded model')
-model.load_weights('class4_weights_new.h5')
+model.load_weights('class_weights_big.h5')
 #have to load weights manually to exclude top layers
 print('loaded weights')
 #print model summary
 model.summary()
 
 #define the step for gradient ascent
-step = 4
+step = 500
 
 #create a dictionary with each layer's name for convenience
 layer_dict = dict([(layer.name, layer) for layer in model.layers])
@@ -96,8 +96,8 @@ input_img = model.layers[0].input
 	#convolutional layer as the input instead of a fully-conected
 
 layer_output = layer_dict[layer_name].output
-#layer_output = model.layers[0].output
-for n in range(0,32):
+#layer_output = model.layers[-1].output
+for n in range(0,10):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
@@ -105,6 +105,7 @@ for n in range(0,32):
 
 	#TODO: select one of these loss function depending on which layer you're using
 	#loss = backend.mean(layer_output[:, filter_index]) # loss function for dense layers
+	#print(loss)
 	loss = backend.mean(layer_output[:,filter_index,:,:]) # for non-dense layers
 
 	#compute gradient of input picture wrt this loss
@@ -116,7 +117,7 @@ for n in range(0,32):
 	iterate = backend.function([input_img, backend.learning_phase()],[loss,grads])
 
 	#set numpy's random seed for reproducibility
-	numpy.random.seed(117)
+	numpy.random.seed(356)
 
 	#start with random grayscale image to begin gradient ascent on
 	input_img_data = numpy.random.random((1,3,img_width, img_height))*20+128
@@ -135,7 +136,7 @@ for n in range(0,32):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	scipy.misc.toimage(img[:,:,0]).save('./images/catsdogs_cnn_layer_%s_filter_%d_1.png' %(layer_name, filter_index))
-	scipy.misc.toimage(img[:,:,1]).save('./images/catsdogs_cnn_layer_%s_filter_%d_2.png' %(layer_name, filter_index))
-	scipy.misc.toimage(img[:,:,2]).save('./images/catsdogs_cnn_layer_%s_filter_%d_3.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,:]).save('./images/catsdogs_cnn_layer_%s_filter_%d.png' %(layer_name, filter_index))
+#	scipy.misc.toimage(img[:,:,1]).save('./images/catsdogs_cnn_layer_%s_filter_%d_2.png' %(layer_name, filter_index))
+#	scipy.misc.toimage(img[:,:,2]).save('./images/catsdogs_cnn_layer_%s_filter_%d_3.png' %(layer_name, filter_index))
 
