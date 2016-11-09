@@ -65,7 +65,7 @@ def deprocess_image(x):
 
 	#convert to grayscale
 	x *= 255	
-	#x = x.transpose((1,2,0)) # change from (channel,height,width) to (height,width,channel) for conversion to png
+	x = x.transpose((1,2,0)) # change from (channel,height,width) to (height,width,channel) for conversion to png
 	x = numpy.clip(x,0,255).astype('uint8')
 
 	return x	
@@ -135,5 +135,7 @@ for n in range(0,10):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	scipy.misc.toimage(img[:,:,:]).save('./images/catsdogs_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,0]).save('./images/catsdogs_cnn_layer_%s_filter_%d_1.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,1]).save('./images/catsdogs_cnn_layer_%s_filter_%d_2.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,2]).save('./images/catsdogs_cnn_layer_%s_filter_%d_3.png' %(layer_name, filter_index))
 
