@@ -44,7 +44,7 @@ Notes:
 
 #pick which layer you would like to run visualize on
 #TODO: write separate script that will run over multiple layers
-layer_name = 'convolution2d_1' # TODO: don't forget to change the loss function
+layer_name = 'convolution2d_3' # TODO: don't forget to change the loss function
 #dense_2 is the name of the final fully-connected classification layer
 #convolution2d_2 is the name of the second non-input convolution layer
 
@@ -97,7 +97,7 @@ input_img = model.layers[0].input
 
 layer_output = layer_dict[layer_name].output
 #layer_output = model.layers[0].output
-for n in range(1,20):
+for n in range(0,10):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
@@ -122,7 +122,7 @@ for n in range(1,20):
 	input_img_data = numpy.random.random((1,3,img_width, img_height))*20+128
 
 	#run gradient ascent on current filter for x steps until loss function is maximized
-	for i in range(200):
+	for i in range(40):
 		#compute loss and gradients
 		loss_value, grads_value = iterate([input_img_data, 0]) # 2nd argument is always 0 (for test phase)
 		#apply gradient to image and repeat
@@ -135,5 +135,5 @@ for n in range(1,20):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	scipy.misc.toimage(img[:,:,0]).save('./images/catsdogs_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,:]).save('./images/catsdogs_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
 
