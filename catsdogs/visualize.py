@@ -135,5 +135,5 @@ for n in range(1,20):
 	end_time = time.time()
 	print('Filter %d processed in %ds' % (filter_index, end_time-start_time))
 	#save image to file
-	scipy.misc.toimage(img[:,:,:]).save('./images/catsdogs_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
+	scipy.misc.toimage(img[:,:,0]).save('./images/catsdogs_cnn_layer_%s_filter_%d_small.png' %(layer_name, filter_index))
 
