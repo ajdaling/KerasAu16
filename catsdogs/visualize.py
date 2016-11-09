@@ -97,7 +97,7 @@ input_img = model.layers[0].input
 
 layer_output = layer_dict[layer_name].output
 #layer_output = model.layers[0].output
-for n in range(0,10):
+for n in range(0,32):
 	filter_index = n
 	print('Processing filter %d' % filter_index)
 	start_time = time.time()
